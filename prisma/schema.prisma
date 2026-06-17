@@ -1,0 +1,95 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Facility {
+  id          Int      @id @default(autoincrement())
+
+  name        String
+  district    String
+  address     String @db.Text
+
+  latitude    Float
+  longitude   Float
+
+  phone       String?
+  openHours   String?
+  thumbnail   String?
+
+  description String? @db.Text
+
+  status      FacilityStatusEnum @default(ACTIVE)
+
+  fields      Field[]
+  images      Image[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id     Int    @id @default(autoincrement())
+  name   String @unique
+  slug   String @unique
+  icon String @default("🏷️")
+  
+  fields Field[]
+}
+
+model Field {
+  id         Int @id @default(autoincrement())
+
+  name       String
+  price      Int
+
+  status     FieldStatusEnum @default(AVAILABLE)
+
+  facilityId Int
+  categoryId Int
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id         Int @id @default(autoincrement())
+  url        String
+
+  facilityId Int
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  createdAt DateTime @default(now())
+}
+
+enum FacilityStatusEnum {
+  ACTIVE
+  MAINTENANCE
+  INACTIVE
+}
+
+enum FieldStatusEnum {
+  AVAILABLE
+  MAINTENANCE
+}
