@@ -22,7 +22,6 @@ export async function POST(req: Request) {
       facilityId: Number(body.facilityId),
       categoryId: Number(body.categoryId),
       status: body.status,
-      title: `Lapangan "${body.name}" berhasil ditambahkan`,
     },
   });
 
@@ -42,7 +41,6 @@ export async function PUT(req: Request) {
       facilityId: Number(body.facilityId),
       categoryId: Number(body.categoryId),
       status: body.status,
-      title: `Lapangan "${body.name}" diperbarui`,
     },
   });
 
@@ -55,7 +53,6 @@ export async function DELETE(req: Request) {
   await prisma.field.delete({
     where: {
       id: Number(body.id),
-      title: `Lapangan "${body.name}" berhasil dihapus`,
     },
   });
 
