@@ -23,6 +23,7 @@ export default function DataLapanganPage() {
   const [facilities, setFacilities] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
 
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingField, setEditingField] = useState<any>(null);
@@ -151,6 +152,16 @@ export default function DataLapanganPage() {
     setIsSheetOpen(true);
   };
 
+  const filteredFields = fields.filter((field) => {
+  const keyword = search.toLowerCase();
+
+  return (
+    field.name.toLowerCase().includes(keyword) ||
+    field.facility?.name.toLowerCase().includes(keyword) ||
+    field.category?.name.toLowerCase().includes(keyword)
+  );
+});
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -209,9 +220,12 @@ export default function DataLapanganPage() {
             <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
 
             <input
-              placeholder="Cari lapangan..."
-              className="w-full pl-10 py-2 border rounded-lg"
-            />
+  type="text"
+  placeholder="Cari lapangan..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full pl-10 py-2 border rounded-lg"
+/>
           </div>
         </div>
 
@@ -235,8 +249,7 @@ export default function DataLapanganPage() {
             </thead>
 
             <tbody>
-              {fields.map((field) => (
-                <tr
+  {filteredFields.map((field) => (                <tr
                   key={field.id}
                   className="border-t"
                 >
@@ -297,11 +310,11 @@ export default function DataLapanganPage() {
         )}
 
         {!loading &&
-          fields.length === 0 && (
-            <div className="text-center py-12 text-zinc-500">
-              Belum ada data lapangan.
-            </div>
-          )}
+  filteredFields.length === 0 && (
+    <div className="text-center py-12 text-zinc-500">
+      Tidak ditemukan data lapangan.
+    </div>
+)}
       </div>
     </div>
   );
